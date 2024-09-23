@@ -1,9 +1,41 @@
 import './App.css';
 import Button from './components/Button';
 import Header from './components/Header';
+import styled from 'styled-components';
 
 import api from './services/api';
 import { useEffect, useState } from 'react';
+import Footer from './components/Footer';
+
+const AppContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 16vh 0 0 0;
+`
+
+const AppButtons = styled.div`
+  display: flex;
+  gap: 4vw;
+  margin: 8vh 0;
+`
+
+const AppEspacosTitle = styled.h1`
+  width: 80%;
+  text-align: left;
+`
+
+const AppEspaco = styled.div`
+  padding: 2vh 0;
+  width: 80%;
+  text-align: left;
+  margin: 4vh 0;
+`
+
+const NomeEspaco = styled.div`
+  font-size: 32px;
+`
 
 function App() {
   const [espacos, setEspacos] = useState([]);
@@ -19,29 +51,29 @@ function App() {
   }, []);
 
   espacos.forEach((espaco) => {
-    console.log(espaco.codespaco);
+    console.log(espaco);
   })
 
   return (
-    <div className="App">
+    <AppContainer className="App">
       <Header />
 
-      <Button texto={"Reserve aqui seu horário"} />
-      <Button texto={"Visualizar agenda"} />
-      <Button texto={"Editar reserva"} />
+      <AppButtons>
+        <Button texto={"Reserve aqui seu horário"} />
+        <Button texto={"Visualizar agenda"} />
+        <Button texto={"Editar reserva"} />
+      </AppButtons>
 
-      <p>Espaços esportivos sob gestão do SECUTE:</p>
-      {espacos.map((espaco, i) => <div>
-
-          ESPAÇO {i}
-          <p>Código espaco: {espaco.codespaco}</p>
-          <p>Nome espaco: {espaco.nomeespaco}</p>
-          <p>Abre: {espacos.horarioabertura}</p>
-          <p>Fecha: {espaco.horariofechamento}</p>
+      <AppEspacosTitle>Espaços esportivos sob gestão do SECUTE:</AppEspacosTitle>
+      {espacos.map((espaco, i) => <AppEspaco>
+          <NomeEspaco>{espaco.nomeespaco}</NomeEspaco>
+          <p>Endereco: {espaco.logradouro}, {espaco.bairro}, {espaco.numeroendereco}</p>
+          <p>Segunda a sábado: {espaco.horarioabertura} - {espaco.horariofechamento}</p>
           <p>Capacidade: {espaco.capacidade} pessoas</p>
-          <p>Endereco: {espaco.codendereco}</p>
-      </div>)}
-    </div>
+      </AppEspaco>)}
+
+      <Footer />
+    </AppContainer>
   );
 }
 
