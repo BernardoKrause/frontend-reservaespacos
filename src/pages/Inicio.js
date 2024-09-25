@@ -50,10 +50,6 @@ function Inicio() {
     }
   }, []);
 
-  espacos.forEach((espaco) => {
-    console.log(espaco);
-  })
-
   return (
     <InicioContainer className="Inicio">
       <Header />

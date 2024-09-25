@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Inicio />} />
-        <Route path='espacos-esportivos' element={<RealizarReserva />} />
+        <Route path='realizar-reserva' element={<RealizarReserva />} />
       </Routes>
     </BrowserRouter>
   );
