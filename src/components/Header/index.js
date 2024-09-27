@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import prefeituraLogo from '../../images/prefeitura-logo.png'
 import styled from 'styled-components';
 
@@ -14,7 +15,7 @@ const HeaderContainer = styled.div`
 function Header() {
     return (
         <HeaderContainer>
-            <img src={prefeituraLogo} alt='logo'></img>
+            <Link to="/"><img src={prefeituraLogo} alt='logo'></img></Link>
             <h1>Reserva de espaços esportivos</h1>
         </HeaderContainer>
     );

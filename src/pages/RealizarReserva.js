@@ -44,7 +44,7 @@ const LabelCheck = styled.label`
     margin: 2vh 0 2vh 0;
 `
 
-const SubmitButton = styled.button`
+const SubmitButton = styled.input`
     background-color: #004666;
     border: none;
     border-radius: 24px;
@@ -70,10 +70,10 @@ function RealizarReserva() {
   const [telefoneUsuario, setTelefoneUsuario] = useState('');
   const [emailUsuario, setEmailUsuario] = useState('');
   const [cpfUsuario, setCpfUsuario] = useState('');
-  const [descricaoReserva, setDescricaoReserva] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [dataReserva, setDataReserva] = useState('');
-  const [horarioInicioReserva, setHorarioInicioReserva] = useState('');
-  const [horarioFechamentoReserva, setHorarioFechamentoReserva] = useState('');
+  const [horaInicio, setHoraInicio] = useState('');
+  const [horaTermino, setHoraTermino] = useState('');
 
   // pega os espaços do banco de dados e armazena no vetor
   const [espacos, setEspacos] = useState([]);
@@ -107,6 +107,15 @@ function RealizarReserva() {
       console.log("erro: "+error);
     }
   }, [codEspacoAtual]);
+
+  const [codTipo, setCodTipo] = useState(1) ///////////////////////////////
+  function getIdTipoEspacoAtual (valorAtual) {
+    for (let i = 0; i< tiposEspacos.length; i++) {
+      if (tiposEspacos[i].nometipo === valorAtual) {
+        setCodTipo(tiposEspacos[i].codtipo);
+      }
+    }
+  }
   
   const [erroTelefone, setErroTelefone] = useState('');
   // Função para validar o telefone usando regex
@@ -152,20 +161,47 @@ function RealizarReserva() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowString = tomorrow.toISOString().split('T')[0];
 
+
+    const [reservasEspaco, setReservasEspaco] = useState([]);
+    useEffect(() => {
+      try {
+        api
+        .get(`/api/reservas/${codEspacoAtual}/${codTipo}`)
+        .then((response) => setReservasEspaco(response.data))
+      } catch (error) {
+        console.log("erro: "+error);
+      }
+    }, [codEspacoAtual, codTipo]);
+    
+    function verificaReserva (dataValue, horaInicio) {
+      reservasEspaco.forEach(reserva => {
+        const tamanhoData = dataValue.length;
+        const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData)
+
+        if (dataReservaFeita === dataValue) {
+          console.log(dataReservaFeita);
+          console.log(dataValue);
+        }
+      });
+    }
+
   // envia os dados para o banco de dados
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario)) {
         alert('Formulário enviado com sucesso!')
     } else {
-        alert('Erro: Verifique os campos informados.');
+        return alert('Erro: Verifique os campos informados.');
     }
 
-    const url = 'http://localhost:3030/api/reservas/';
-    const data = { dataReserva, descricaoReserva, horarioInicioReserva, horarioFechamentoReserva, nomeEspaco }
+    const url = 'http://localhost:3030/api/reservas';
+    const codEspaco = codEspacoAtual
+    const data = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo }
 
-    fetch(url, {
+    verificaReserva(dataReserva);
+    
+    await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -174,6 +210,7 @@ function RealizarReserva() {
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
 
+    window.location.reload();
   }
 
   return (
@@ -193,7 +230,10 @@ function RealizarReserva() {
                 </Label>
                 <Label>
                     Tipo do Espaço
-                    <InputSelect value={tipoEspaco} onChange={(e) => setTipoEspaco(e.target.value)} required>
+                    <InputSelect value={tipoEspaco} onChange={(e) => {
+                      setTipoEspaco(e.target.value);
+                      getIdTipoEspacoAtual(e.target.value);
+                    }} required>
                         <option value="">Selecione uma opção</option>
                         {tiposEspacos.map((tipoespaco, i) => <option key={i} value={tipoespaco.nometipo}>{tipoespaco.nometipo}</option>)}
                     </InputSelect>
@@ -236,7 +276,7 @@ function RealizarReserva() {
             <LabelsContainer>
                 <Label>
                     Descrição da Reserva
-                    <Input type='text' value={descricaoReserva} onChange={(e) => setDescricaoReserva(e.target.value)} required/>
+                    <Input type='text' value={descricao} onChange={(e) => setDescricao(e.target.value)} required/>
                 </Label>
             </LabelsContainer>
             <Label>
@@ -246,18 +286,18 @@ function RealizarReserva() {
             <LabelsContainer>
                 <Label>
                     Horário Início
-                    <Input type='time' value={horarioInicioReserva} onChange={(e) => setHorarioInicioReserva(e.target.value)} required/>
+                    <Input min="08:00" type='time' value={horaInicio} onChange={(e) => setHoraInicio(e.target.value)} required/>
                 </Label>
                 <Label>
                     Horário Término
-                    <Input type='time' value={horarioFechamentoReserva} onChange={(e) => setHorarioFechamentoReserva(e.target.value)} required/>
+                    <Input max="22:00" type='time' value={horaTermino} onChange={(e) => setHoraTermino(e.target.value)} required/>
                 </Label>
             </LabelsContainer>
             <LabelCheck>
                 <Input type='checkbox' required/>
                 Ciente que terei que apresentar documento de identificação com FOTO
             </LabelCheck>
-            <SubmitButton type='submit'>Enviar</SubmitButton>
+            <SubmitButton type='submit' value="Enviar" />
         </form>
         <Footer />
     </RealizarReservaContainer>

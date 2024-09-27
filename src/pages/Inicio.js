@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import styled from 'styled-components';
 import api from '../services/api';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const InicioContainer = styled.div`
   display: flex;
@@ -55,7 +56,7 @@ function Inicio() {
       <Header />
 
       <InicioButtons>
-        <Button texto={"Reserve aqui seu horário"} />
+        <Link to="/realizar-reserva"><Button texto={"Reserve aqui seu horário"} /></Link>
         <Button texto={"Visualizar agenda"} />
         <Button texto={"Editar reserva"} />
       </InicioButtons>
