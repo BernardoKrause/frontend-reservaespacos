@@ -57,7 +57,7 @@ function Inicio() {
 
       <InicioButtons>
         <Link to="/realizar-reserva"><Button texto={"Reserve aqui seu horário"} /></Link>
-        <Button texto={"Visualizar agenda"} />
+        <Link to="/espacos"><Button texto={"Visualizar agenda"} /> </Link>
         <Button texto={"Editar reserva"} />
       </InicioButtons>
 
