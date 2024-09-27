@@ -161,7 +161,6 @@ function RealizarReserva() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowString = tomorrow.toISOString().split('T')[0];
 
-
     const [reservasEspaco, setReservasEspaco] = useState([]);
     useEffect(() => {
       try {
@@ -173,15 +172,29 @@ function RealizarReserva() {
       }
     }, [codEspacoAtual, codTipo]);
     
-    function verificaReserva (dataValue, horaInicio) {
+    function verificaReserva (dataValue,horaInicio,horaTermino) {
       reservasEspaco.forEach(reserva => {
         const tamanhoData = dataValue.length;
-        const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData)
+        const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData);
+        const horaInicioFormatada = horaInicio+':00';
+        const horaTerminoFormatada = horaTermino+':00';
+        
+        console.log('DATAS');
+        console.log(dataReservaFeita);
+        console.log(dataValue);
+        console.log('HORA INICIO');
+        console.log(horaInicioFormatada);
+        console.log(reserva.horainicio);
+        console.log('HORA TERMINO');
+        console.log(horaTerminoFormatada);
+        console.log(reserva.horatermino);
 
-        if (dataReservaFeita === dataValue) {
-          console.log(dataReservaFeita);
-          console.log(dataValue);
+        if ((dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino)) {
+          return true;
+        } else {
+          return false;
         }
+
       });
     }
 
@@ -189,17 +202,18 @@ function RealizarReserva() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario)) {
-        alert('Formulário enviado com sucesso!')
-    } else {
-        return alert('Erro: Verifique os campos informados.');
-    }
-
     const url = 'http://localhost:3030/api/reservas';
     const codEspaco = codEspacoAtual
     const data = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo }
 
-    verificaReserva(dataReserva);
+    if (!(validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario))) {
+      return alert('Erro: Verifique os campos informados.');      
+    } else if (verificaReserva(dataReserva, horaInicio, horaTermino)) {
+      return alert('ERRO: Já existe uma reserva nesse espaço e nesse mesmo horário!');
+    }else {
+      alert('Formulário enviado com sucesso!');
+    }
+
     
     await fetch(url, {
         method: 'POST',
@@ -294,7 +308,7 @@ function RealizarReserva() {
                 </Label>
             </LabelsContainer>
             <LabelCheck>
-                <Input type='checkbox' required/>
+                <Input type='checkbox' required onChange={(e) => verificaReserva(dataReserva, horaInicio, horaTermino)}/>
                 Ciente que terei que apresentar documento de identificação com FOTO
             </LabelCheck>
             <SubmitButton type='submit' value="Enviar" />
