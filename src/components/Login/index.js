@@ -99,7 +99,7 @@ function Login({ codReserva }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
     
-        if(!validarSenha()) {
+        if(!validarSenha(senhaUsuario)) {
             return false;
         } 
     
