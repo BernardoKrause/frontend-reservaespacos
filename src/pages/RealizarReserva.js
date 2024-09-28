@@ -172,12 +172,12 @@ function RealizarReserva() {
       }
     }, [codEspacoAtual, codTipo]);
     
-    function verificaReserva (dataValue,horaInicio,horaTermino) {
-      reservasEspaco.forEach(reserva => {
+    function verificaReserva (dataValue,horaInicioValue,horaTerminoValue) {
+      return reservasEspaco.some(reserva => {
         const tamanhoData = dataValue.length;
         const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData);
-        const horaInicioFormatada = horaInicio+':00';
-        const horaTerminoFormatada = horaTermino+':00';
+        const horaInicioFormatada = horaInicioValue+':00';
+        const horaTerminoFormatada = horaTerminoValue+':00';
         
         console.log('DATAS');
         console.log(dataReservaFeita);
@@ -189,11 +189,7 @@ function RealizarReserva() {
         console.log(horaTerminoFormatada);
         console.log(reserva.horatermino);
 
-        if ((dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino)) {
-          return true;
-        } else {
-          return false;
-        }
+        return (dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino);
 
       });
     }
@@ -208,9 +204,10 @@ function RealizarReserva() {
 
     if (!(validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario))) {
       return alert('Erro: Verifique os campos informados.');      
-    } else if (verificaReserva(dataReserva, horaInicio, horaTermino)) {
+    }  
+    if (verificaReserva(data.dataReserva, data.horaInicio, data.horaTermino)) {
       return alert('ERRO: Já existe uma reserva nesse espaço e nesse mesmo horário!');
-    }else {
+    } else {
       alert('Formulário enviado com sucesso!');
     }
 
@@ -308,7 +305,7 @@ function RealizarReserva() {
                 </Label>
             </LabelsContainer>
             <LabelCheck>
-                <Input type='checkbox' required onChange={(e) => verificaReserva(dataReserva, horaInicio, horaTermino)}/>
+                <Input type='checkbox' required/>
                 Ciente que terei que apresentar documento de identificação com FOTO
             </LabelCheck>
             <SubmitButton type='submit' value="Enviar" />
