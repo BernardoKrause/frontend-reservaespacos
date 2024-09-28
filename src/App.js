@@ -13,7 +13,7 @@ function App() {
         <Route path='/' element={<Inicio />} />
         <Route path='realizar-reserva' element={<RealizarReserva />} />
         <Route path='espacos' element={<Espacos />} />
-        <Route path='calendario' element={<CalendarPage />} />
+        <Route path='espacos/calendario/:codEspaco' element={<CalendarPage />} />
       </Routes>
     </BrowserRouter>
   );
