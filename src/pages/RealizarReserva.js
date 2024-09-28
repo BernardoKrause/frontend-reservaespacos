@@ -172,7 +172,7 @@ function RealizarReserva() {
       }
     }, [codEspacoAtual, codTipo]);
     
-    function verificaReserva (dataValue,horaInicio,horaTermino) {
+    function verificaReserva (dataValue,horaInicioValue,horaTerminoValue) {
       reservasEspaco.forEach(reserva => {
         const tamanhoData = dataValue.length;
         const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData);
