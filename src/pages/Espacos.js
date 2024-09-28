@@ -3,6 +3,7 @@ import Footer from '../components/Footer';
 import styled from 'styled-components';
 import api from '../services/api';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const EspacoContainer = styled.div`
   display: flex;
@@ -208,7 +209,7 @@ function Espacos() {
 
       <DivEspacos>
         {filteredEspacos.map((espaco) => (
-          <Espaco key={espaco.codespaco}>
+          <Link to={`./calendario/${espaco.codespaco}`}><Espaco key={espaco.codespaco}>
             <NomeEspaco>Agendamento - {espaco.nomeespaco}</NomeEspaco>
             <PEspacos>Endereço: {espaco.logradouro}, {espaco.bairro}, {espaco.numeroendereco}</PEspacos>
             <PEspacos>Segunda a sábado: {espaco.horarioabertura} - {espaco.horariofechamento}</PEspacos>
@@ -222,7 +223,7 @@ function Espacos() {
               ))
             )}
           </PEspacos>
-          </Espaco>
+          </Espaco></Link>
         ))}
       </DivEspacos>
 
