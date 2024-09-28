@@ -176,8 +176,8 @@ function RealizarReserva() {
       reservasEspaco.forEach(reserva => {
         const tamanhoData = dataValue.length;
         const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData);
-        const horaInicioFormatada = horaInicioValue+':00';
-        const horaTerminoFormatada = horaTerminoValue+':00';
+        const horaInicioFormatada = horaInicio+':00';
+        const horaTerminoFormatada = horaTermino+':00';
         
         console.log('DATAS');
         console.log(dataReservaFeita);
@@ -189,7 +189,11 @@ function RealizarReserva() {
         console.log(horaTerminoFormatada);
         console.log(reserva.horatermino);
 
-        return (dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino);
+        if ((dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino)) {
+          return true;
+        } else {
+          return false;
+        }
 
       });
     }
