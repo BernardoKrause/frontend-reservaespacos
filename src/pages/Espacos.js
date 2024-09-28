@@ -3,6 +3,7 @@ import Footer from '../components/Footer';
 import styled from 'styled-components';
 import api from '../services/api';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const EspacoContainer = styled.div`
   display: flex;
@@ -97,6 +98,8 @@ function Espacos() {
           })
         );
 
+        console.log(tipos);
+
         setEspacos(tipos); // Atualiza espacos com os tipos
         setFilteredEspacos(tipos); // Atualiza os filtrados com os tipos também
       } catch (error) {
@@ -107,22 +110,46 @@ function Espacos() {
     fetchEspacos(); // Chama a função para carregar os espaços
   }, []);
 
+  const [codTipo, setCodTipo] = useState(1) ///////////////////////////////
+  function getIdTipoEspacoAtual (valorAtual) {
+    for (let i = 0; i< tiposEspacos.length; i++) {
+      if (tiposEspacos[i].nometipo === valorAtual) {
+        setCodTipo(tiposEspacos[i].codtipo);
+      }
+    }
+  }
 
   const handleFilter = async () => {
     try {
       let filtered;
   
       if (tipoQuadra) {
-        const responseTipo = await api.get(`/api/espacos/tipo/${tipoQuadra}`);
-        filtered = responseTipo.data; // Filtra pelos tipos
+        const response = await api.get(`/api/espacos/tipo/${codTipo}`);
+        filtered = response.data; // Filtra pelos tipos
       } else if (capacidade) {
-        const responseCapacidade = await api.get(`/api/espacos/capacidade/${capacidade}`);
-        filtered = responseCapacidade.data; // Filtra pela capacidade
+        const response = await api.get(`/api/espacos/capacidade/${capacidade}`);
+        filtered = response.data; // Filtra pela capacidade
       } else {
         filtered = espacos; // Caso nenhum filtro seja selecionado
       }
-  
-      setFilteredEspacos(filtered); // Atualiza os espaços filtrados
+
+      // Busca os tipos de espaços para cada espaço
+      console.log(filtered)
+      const tiposFiltered = await Promise.all(
+        filtered.map(async (espaco) => {
+          console.log(espaco);
+          const tipoResponse = await api.get(`/api/tipos/espaco/${espaco.codespaco}`);
+          return {
+            ...espaco,
+            tipos: tipoResponse.data, // Adiciona os tipos ao espaço
+          };
+        })
+      );
+
+      console.log(tiposFiltered);
+
+      setEspacos(tiposFiltered); // Atualiza espacos com os tipos
+      setFilteredEspacos(tiposFiltered); // Atualiza os espaços filtrados
     } catch (error) {
       console.log("Erro: " + error);
     }
@@ -152,6 +179,7 @@ function Espacos() {
       value={tipoQuadra}
       onChange={(e) => {
         setTipoQuadra(e.target.value);
+        getIdTipoEspacoAtual(e.target.value)
         setCapacidade(''); // Limpa a capacidade quando tipo é selecionado
       }}
     >
@@ -181,12 +209,12 @@ function Espacos() {
 
       <DivEspacos>
         {filteredEspacos.map((espaco) => (
-          <Espaco key={espaco.codespaco}>
+          <Link to={`./calendario/${espaco.codespaco}`}><Espaco key={espaco.codespaco}>
             <NomeEspaco>Agendamento - {espaco.nomeespaco}</NomeEspaco>
             <PEspacos>Endereço: {espaco.logradouro}, {espaco.bairro}, {espaco.numeroendereco}</PEspacos>
             <PEspacos>Segunda a sábado: {espaco.horarioabertura} - {espaco.horariofechamento}</PEspacos>
             <PEspacos>Capacidade: {espaco.capacidade} pessoas</PEspacos>
-            <PEspacos>Tipo: 
+            <PEspacos>Tipo: {}
             {espaco.tipos && espaco.tipos.length > 0 && (
               espaco.tipos.map((tipo, index) => (
                 <span key={index}>
@@ -195,7 +223,7 @@ function Espacos() {
               ))
             )}
           </PEspacos>
-          </Espaco>
+          </Espaco></Link>
         ))}
       </DivEspacos>
 

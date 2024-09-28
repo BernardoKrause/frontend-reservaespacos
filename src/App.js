@@ -16,6 +16,7 @@ function App() {
         <Route path='espacos' element={<Espacos />} />
         <Route path='calendario' element={<CalendarPage />} />
         <Route path='editar-reserva-login/:codReserva' element={<EditarReservaLogin />}/>
+        <Route path='espacos/calendario/:codEspaco' element={<CalendarPage />} />
       </Routes>
     </BrowserRouter>
   );
