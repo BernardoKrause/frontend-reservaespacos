@@ -179,7 +179,9 @@ function RealizarReserva() {
         const horaInicioFormatada = horaInicioValue+':00';
         const horaTerminoFormatada = horaTerminoValue+':00';
 
-        return (dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino)
+        return (dataReservaFeita === dataValue) && (((horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino))
+        || ((horaInicioFormatada >= reserva.horainicio && horaInicioFormatada <= reserva.horatermino) 
+        || (horaTerminoFormatada >= reserva.horainicio && horaTerminoFormatada <= reserva.horatermino)));
       });
     }
 
@@ -198,7 +200,6 @@ function RealizarReserva() {
     }else {
       alert('Formulário enviado com sucesso!');
     }
-
     
     await fetch(url, {
         method: 'POST',
