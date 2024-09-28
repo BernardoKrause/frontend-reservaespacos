@@ -62,7 +62,7 @@ function Inicio() {
       </InicioButtons>
 
       <InicioEspacosTitle>Espaços esportivos sob gestão do SECUTE:</InicioEspacosTitle>
-      {espacos.map((espaco, i) => <InicioEspaco>
+      {espacos.map((espaco, i) => <InicioEspaco key={i}>
           <NomeEspaco>{espaco.nomeespaco}</NomeEspaco>
           <p>Endereco: {espaco.logradouro}, {espaco.bairro}, {espaco.numeroendereco}</p>
           <p>Segunda a sábado: {espaco.horarioabertura} - {espaco.horariofechamento}</p>
