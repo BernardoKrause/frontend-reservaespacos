@@ -161,6 +161,27 @@ function RealizarReserva() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowString = tomorrow.toISOString().split('T')[0];
 
+    const [reservasGeral, setReservasGeral] = useState([]);
+    useEffect(() => {
+      try {
+        api
+        .get(`/api/reservas/`)
+        .then((response) => setReservasGeral(response.data))
+      } catch (error) {
+        console.log("erro: "+error);
+      }
+    }, []);
+
+    function CodReserva() {
+      if (reservasEspaco.length === 0) {
+        return 1;
+      }
+
+      const codMaiorReserva = Math.max(...reservasGeral.map(reserva => reserva.codreserva));
+    
+      return codMaiorReserva + 1;
+    }
+
     const [reservasEspaco, setReservasEspaco] = useState([]);
     useEffect(() => {
       try {
@@ -185,13 +206,14 @@ function RealizarReserva() {
       });
     }
 
+
   // envia os dados para o banco de dados
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const url = 'http://localhost:3030/api/reservas';
+    const urlReserva = 'http://localhost:3030/api/reservas';
     const codEspaco = codEspacoAtual
-    const data = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo }
+    const dadosReserva = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo }
 
     if (!(validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario))) {
       return alert('Erro: Verifique os campos informados.');      
@@ -201,10 +223,23 @@ function RealizarReserva() {
       alert('Formulário enviado com sucesso!');
     }
     
-    await fetch(url, {
+    await fetch(urlReserva, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(dadosReserva),
+    })
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+    .catch((error) => console.error(error));
+
+    const urlUsuario = 'http://localhost:3030/api/usuarios'
+    const codReserva = CodReserva();
+    const dadosUsuario = { codReserva, nomeUsuario, emailUsuario, telefoneUsuario, cpfUsuario }
+
+    await fetch (urlUsuario, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(dadosUsuario),
     })
     .then((response) => response.json())
     .then((data) => console.log(data))
@@ -294,7 +329,10 @@ function RealizarReserva() {
                 </Label>
             </LabelsContainer>
             <LabelCheck>
-                <Input type='checkbox' required onChange={(e) => verificaReserva(dataReserva, horaInicio, horaTermino)}/>
+                <Input type='checkbox' required onChange={(e) => {
+                  verificaReserva(dataReserva, horaInicio, horaTermino);
+                  console.log(CodReserva());
+                  }}/>
                 Ciente que terei que apresentar documento de identificação com FOTO
             </LabelCheck>
             <SubmitButton type='submit' value="Enviar" />
