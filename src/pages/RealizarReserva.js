@@ -178,16 +178,6 @@ function RealizarReserva() {
         const dataReservaFeita = reserva.datareserva.slice(0, tamanhoData);
         const horaInicioFormatada = horaInicioValue+':00';
         const horaTerminoFormatada = horaTerminoValue+':00';
-        
-        console.log('DATAS');
-        console.log(dataReservaFeita);
-        console.log(dataValue);
-        console.log('HORA INICIO');
-        console.log(horaInicioFormatada);
-        console.log(reserva.horainicio);
-        console.log('HORA TERMINO');
-        console.log(horaTerminoFormatada);
-        console.log(reserva.horatermino);
 
         return (dataReservaFeita === dataValue) && (horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino);
 
