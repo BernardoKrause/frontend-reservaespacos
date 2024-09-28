@@ -2,6 +2,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
 import Inicio from './pages/Inicio';
 import RealizarReserva from './pages/RealizarReserva';
+import Espacos from './pages/Espacos'
 import CalendarPage from './pages/CalendarPage';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Inicio />} />
         <Route path='realizar-reserva' element={<RealizarReserva />} />
+        <Route path='espacos' element={<Espacos />} />
         <Route path='calendario' element={<CalendarPage />} />
       </Routes>
     </BrowserRouter>
