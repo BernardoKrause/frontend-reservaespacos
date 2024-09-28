@@ -10,6 +10,7 @@ const HeaderContainer = styled.div`
     left: 0;
     right: 0;
     background-color: #fff;
+    z-index: 9;
 `
 
 function Header() {
