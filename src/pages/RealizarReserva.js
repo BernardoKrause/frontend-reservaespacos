@@ -307,7 +307,7 @@ function RealizarReserva() {
                     <Erro>{erroCPF && <p style={{ color: 'red' }}>{erroCPF}</p>}</Erro>
                 </Label>
             </LabelsContainer>
-            <h4>Informações do solicitante</h4>
+            <h4>Dados da Reserva</h4>
             <LabelsContainer>
                 <Label>
                     Descrição da Reserva

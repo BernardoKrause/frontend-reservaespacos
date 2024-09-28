@@ -58,7 +58,6 @@ function Inicio() {
       <InicioButtons>
         <Link to="/realizar-reserva"><Button texto={"Reserve aqui seu horário"} /></Link>
         <Link to="/espacos"><Button texto={"Visualizar agenda"} /> </Link>
-        <Button texto={"Editar reserva"} />
       </InicioButtons>
 
       <InicioEspacosTitle>Espaços esportivos sob gestão do SECUTE:</InicioEspacosTitle>
