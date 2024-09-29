@@ -4,9 +4,9 @@ import Footer from '../components/Footer';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const RealizarReservaContainer = styled.div`
+const EditarReservaContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,20 +80,56 @@ const Erro = styled.div`
     font-size: 0.6em;
 `
 
-function RealizarReserva() {
+function EditarReserva() {
+    
+    const codReservaParams = useParams().codReserva;
+ 
     // declaração dos dados (informações a serem inseridos)
-  const [nomeEspaco, setNomeEspaco] = useState('');
-  const [tipoEspaco, setTipoEspaco] = useState('');
-  const [nomeUsuario, setNomeUsuario] = useState('');
-  const [telefoneUsuario, setTelefoneUsuario] = useState('');
-  const [emailUsuario, setEmailUsuario] = useState('');
-  const [cpfUsuario, setCpfUsuario] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [dataReserva, setDataReserva] = useState('');
-  const [horaInicio, setHoraInicio] = useState('');
-  const [horaTermino, setHoraTermino] = useState('');
+    const [codReservaAt, setCodReservaAt] = useState(null);
+    const [nomeEspaco, setNomeEspaco] = useState('');
+    const [tipoEspaco, setTipoEspaco] = useState('');
+    const [nomeUsuario, setNomeUsuario] = useState('');
+    const [telefoneUsuario, setTelefoneUsuario] = useState('');
+    const [emailUsuario, setEmailUsuario] = useState('');
+    const [cpfUsuario, setCpfUsuario] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [dataReserva, setDataReserva] = useState('');
+    const [horaInicio, setHoraInicio] = useState('');
+    const [horaTermino, setHoraTermino] = useState('');
+    const [codEspacoValue, setCodEspacoValue] = useState(null);
 
-  const navigate = useNavigate();
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+            await api
+            .get(`/api/reservas/${codReservaParams}`)
+            .then((response) => {
+                const reserva = response.data[0];
+                console.log(reserva);
+                setCodReservaAt(reserva.codreserva);
+                setNomeEspaco(reserva.nomeespaco);
+                setTipoEspaco(reserva.nometipo);
+                setNomeUsuario(reserva.nomeusuario);
+                setTelefoneUsuario(reserva.telefoneusuario);
+                setEmailUsuario(reserva.emailusuario);
+                setCpfUsuario(reserva.cpfusuario);
+                setDescricao(reserva.descricao);
+                setDataReserva(reserva.datareserva);
+                setHoraInicio(reserva.horainicio);
+                setHoraTermino(reserva.horatermino);
+                setCodEspacoValue(reserva.codespaco);
+            })
+            } catch (error) {
+            console.log("erro: "+error);
+            }
+        }
+
+        fetchData();
+    }, [codReservaParams]);
+
 
   // pega os espaços do banco de dados e armazena no vetor
   const [espacos, setEspacos] = useState([]);
@@ -199,6 +235,10 @@ function RealizarReserva() {
         const horaInicioFormatada = horaInicioValue+':00';
         const horaTerminoFormatada = horaTerminoValue+':00';
 
+        if (reserva.codreserva === codReservaAt) {
+            return false;
+        }
+
         return (dataReservaFeita === dataValue) && (((horaInicioFormatada === reserva.horainicio) && (horaTerminoFormatada === reserva.horatermino))
         || ((horaInicioFormatada >= reserva.horainicio && horaInicioFormatada <= reserva.horatermino) 
         || (horaTerminoFormatada >= reserva.horainicio && horaTerminoFormatada <= reserva.horatermino)));
@@ -210,9 +250,8 @@ function RealizarReserva() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const urlReserva = 'http://localhost:3030/api/reservas';
-    const codEspaco = codEspacoAtual;
-    const dadosReserva = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo };
+    const urlReserva = `http://localhost:3030/api/reserva/${codReservaParams}`;
+    const dadosReserva = { dataReserva, descricao, horaInicio, horaTermino };
 
     if (!(validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario))) {
         return alert('Erro: Verifique os campos informados.');
@@ -223,30 +262,19 @@ function RealizarReserva() {
     }
 
     // Envia a reserva e obtém o código gerado
-    const reservaResponse = await fetch(urlReserva, {
-        method: 'POST',
+    await fetch(urlReserva, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosReserva),
     });
 
-    const reservaData = await reservaResponse.json();
-    const codReserva = reservaData.codreserva; // Supondo que a API retorna o codreserva gerado
 
-    const urlUsuario = 'http://localhost:3030/api/usuarios';
-    const dadosUsuario = { codReserva, nomeUsuario, emailUsuario, telefoneUsuario, cpfUsuario };
 
-    await fetch(urlUsuario, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dadosUsuario),
-    });
-
-    navigate(`/espacos/calendario/${codEspacoAtual}`);
-
+    navigate(`/espacos/calendario/${codEspacoValue}`);
 };
 
   return (
-    <RealizarReservaContainer className="RealizarReserva">
+    <EditarReservaContainer className="EditarReserva">
         <Header />
         <Formulario onSubmit={handleSubmit}>
             <LabelsContainer>
@@ -256,8 +284,7 @@ function RealizarReserva() {
                         setNomeEspaco(e.target.value);
                         getEspacoAtual(e.target.value);
                         }} required>
-                        <option value="">Selecione uma opção</option>
-                        {espacos.map((espaco, i) => <option key={i} value={espaco.nomeespaco}>{espaco.nomeespaco}</option>)}
+                        <option value={nomeEspaco}>{nomeEspaco}</option>
                     </InputSelect>
                 </Label>
                 <Label>
@@ -266,8 +293,7 @@ function RealizarReserva() {
                       setTipoEspaco(e.target.value);
                       getIdTipoEspacoAtual(e.target.value);
                     }} required>
-                        <option value="">Selecione uma opção</option>
-                        {tiposEspacos.map((tipoespaco, i) => <option key={i} value={tipoespaco.nometipo}>{tipoespaco.nometipo}</option>)}
+                        <option value={tipoEspaco}>{tipoEspaco}</option>
                     </InputSelect>
                 </Label>
             </LabelsContainer>
@@ -275,11 +301,11 @@ function RealizarReserva() {
             <LabelsContainer>
                 <Label>
                     Nome Completo
-                    <Input type='text' value={nomeUsuario} onChange={(e) => setNomeUsuario(e.target.value)} required/>
+                    <Input readOnly type='text' value={nomeUsuario} onChange={(e) => setNomeUsuario(e.target.value)} required/>
                 </Label>
                 <Label>
                     Telefone para contato
-                    <Input type='text' value={telefoneUsuario} onChange={(e) => {
+                    <Input readOnly type='text' value={telefoneUsuario} onChange={(e) => {
                                                                             setTelefoneUsuario(e.target.value)
                                                                             validarTelefone(e.target.value);
                         }} required/>
@@ -289,7 +315,7 @@ function RealizarReserva() {
             <LabelsContainer>
                 <Label>
                     E-mail
-                    <Input type='text' value={emailUsuario} onChange={(e) => {
+                    <Input readOnly type='text' value={emailUsuario} onChange={(e) => {
                                                                             setEmailUsuario(e.target.value);
                                                                             validarEmail(e.target.value);
                         }} />
@@ -297,7 +323,7 @@ function RealizarReserva() {
                 </Label>
                 <Label>
                     CPF
-                    <Input type='text' value={cpfUsuario} onChange={(e) => {
+                    <Input readOnly type='text' value={cpfUsuario} onChange={(e) => {
                                                                             setCpfUsuario(e.target.value);
                                                                             validarCPF(e.target.value);
                         }} required/>
@@ -308,12 +334,12 @@ function RealizarReserva() {
             <LabelsContainer>
                 <Label>
                     Descrição da Reserva
-                    <Input type='text' value={descricao} onChange={(e) => setDescricao(e.target.value)} required/>
+                    <Input type='text'  value={descricao} onChange={(e) => setDescricao(e.target.value)} required/>
                 </Label>
             </LabelsContainer>
             <Label>
                 Data da Reserva
-                <Input type='date' value={dataReserva} onChange={(e) => setDataReserva(e.target.value)} min={tomorrowString}  required/>
+                <Input type='date'value={dataReserva} onChange={(e) => setDataReserva(e.target.value)} min={tomorrowString}  required/>
             </Label>
             <LabelsContainer>
                 <Label>
@@ -326,7 +352,7 @@ function RealizarReserva() {
                 </Label>
             </LabelsContainer>
             <LabelCheck>
-                <Input type='checkbox' required onChange={(e) => {
+                <Input checked type='checkbox' required onChange={(e) => {
                   verificaReserva(dataReserva, horaInicio, horaTermino);
                   }}/>
                 Ciente que terei que apresentar documento de identificação com FOTO
@@ -334,8 +360,8 @@ function RealizarReserva() {
             <SubmitButton type='submit' value="Enviar" />
         </Formulario>
         <Footer />
-    </RealizarReservaContainer>
+    </EditarReservaContainer>
   );
 }
 
-export default RealizarReserva;
+export default EditarReserva;
