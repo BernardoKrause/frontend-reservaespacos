@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'; // Ícones de edição e exclusão
+import { Link } from 'react-router-dom';
 
 const CalendarContainer = styled.div`
   display: flex;
@@ -69,18 +70,29 @@ const CalendarPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para controlar a abertura do modal
   const [selectedEvent, setSelectedEvent] = useState(null); // Evento selecionado
 
-  const paramentros = useParams();
-  const codEspaco = paramentros.codEspaco;
-  const [evento, setEvento] = useState([]);
+  const parametros = useParams();
+  const codEspaco = parametros.codEspaco;
+  const [espacos, setEspacos] = useState([]);
+
+  useEffect(() => {
+    const fetchEspacos = async () => {
+      try {
+        const response = await api.get(`/api/espacos/${codEspaco}`);
+        setEspacos(response.data);
+      } catch (error) {
+        console.log("Erro: " + error);
+      }
+    };
+
+    fetchEspacos(); // Chama a função para carregar os espaços
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await api.get(`/api/reserva/espaco/${codEspaco}`);
-        console.log('Dados da API:', response.data);
 
         const eventData = response.data.map((event) => {
-          setEvento(event);
           const startDateTime = new Date(
             `${event.datareserva.split('T')[0]}T${event.horainicio}`
           ).toISOString();
@@ -134,18 +146,21 @@ const CalendarPage = () => {
   return (
     <CalendarContainer>
       <Header />
-      <DivCalender>
-        <CalendarioHeader>Calendário - {evento.nomeespaco} </CalendarioHeader>
-        <FullCalendar
-          plugins={[dayGridPlugin]}
-          initialView="dayGridMonth"
-          events={events}
-          locale="pt-br"
-          eventClick={handleEventClick} // Adiciona o evento de clique
-          height="auto"
-        />
-      </DivCalender>
+      {espacos.map((espaco) => (
+        <DivCalender>
+            <CalendarioHeader>Calendário - {espaco.nomeespaco} </CalendarioHeader>
+            <FullCalendar
+              plugins={[dayGridPlugin]}
+              initialView="dayGridMonth"
+              events={events}
+              locale="pt-br"
+              eventClick={handleEventClick} // Adiciona o evento de clique
+              height="auto"
+            />
+        </DivCalender>
+      ))}
       <Footer />
+      
 
       {/* Modal */}
       {selectedEvent && (
@@ -157,12 +172,16 @@ const CalendarPage = () => {
         >
           <DivBotao>
             <h2>{selectedEvent.descricao}
-              <ActionButton onClick={handleEditEvent}>
-                <FontAwesomeIcon icon={faEdit} />
-              </ActionButton>
-              <ActionButton onClick={handleDeleteEvent}>
-                <FontAwesomeIcon icon={faTrash} />
-              </ActionButton>
+              <Link to={`/editar-reserva-login/${codEspaco}/1`}>
+                <ActionButton onClick={handleEditEvent}>
+                  <FontAwesomeIcon icon={faEdit} />
+                </ActionButton>
+              </Link>
+              <Link to={`/editar-reserva-login/${codEspaco}/2`}>
+                <ActionButton onClick={handleDeleteEvent}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </ActionButton>
+              </Link>
             </h2>
           </DivBotao>
           <p>

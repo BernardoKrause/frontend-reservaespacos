@@ -171,41 +171,41 @@ function Espacos() {
     <EspacoContainer className="Espacos">
       <Header />
 
-<FilterContainer>
-  <InputContainer>
-    <Label htmlFor="tipoQuadra">Tipo do Espaço</Label>
-    <Select
-      id="tipoQuadra"
-      value={tipoQuadra}
-      onChange={(e) => {
-        setTipoQuadra(e.target.value);
-        getIdTipoEspacoAtual(e.target.value)
-        setCapacidade(''); // Limpa a capacidade quando tipo é selecionado
-      }}
-    >
-      <option value="">Selecione uma opção</option>
-      {tiposEspacos.map((tipoespaco, i) => (
-        <option key={i} value={tipoespaco.id}>{tipoespaco.nometipo}</option> // Usar o ID do tipo
-      ))}
-    </Select>
-  </InputContainer>
+        <FilterContainer>
+          <InputContainer>
+            <Label htmlFor="tipoQuadra">Tipo do Espaço</Label>
+            <Select
+              id="tipoQuadra"
+              value={tipoQuadra}
+              onChange={(e) => {
+                setTipoQuadra(e.target.value);
+                getIdTipoEspacoAtual(e.target.value)
+                setCapacidade(''); // Limpa a capacidade quando tipo é selecionado
+              }}
+            >
+              <option value="">Selecione uma opção</option>
+              {tiposEspacos.map((tipoespaco, i) => (
+                <option key={i} value={tipoespaco.id}>{tipoespaco.nometipo}</option> // Usar o ID do tipo
+              ))}
+            </Select>
+          </InputContainer>
 
-  <InputContainer>
-    <Label htmlFor="capacidade">Capacidade Mínima</Label>
-    <Input
-      id="capacidade"
-      type="number"
-      value={capacidade}
-      onChange={(e) => {
-        setCapacidade(e.target.value);
-        setTipoQuadra(''); // Limpa o tipo quando capacidade é alterada
-      }}
-      placeholder="Capacidade mínima"
-    />
-  </InputContainer>
+          <InputContainer>
+            <Label htmlFor="capacidade">Capacidade Mínima</Label>
+            <Input
+              id="capacidade"
+              type="number"
+              value={capacidade}
+              onChange={(e) => {
+                setCapacidade(e.target.value);
+                setTipoQuadra(''); // Limpa o tipo quando capacidade é alterada
+              }}
+              placeholder="Capacidade mínima"
+            />
+          </InputContainer>
 
-  <button onClick={handleFilter}>Filtrar</button>
-</FilterContainer>
+          <button onClick={handleFilter}>Filtrar</button>
+        </FilterContainer>
 
       <DivEspacos>
         {filteredEspacos.map((espaco) => (

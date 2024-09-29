@@ -17,15 +17,16 @@ const EditarReservaLoginContainer = styled.div`
   
 `
 
-function EditarReservaLogin() {
+const EditarReservaLogin = () => { 
 
-    const codReserva = useParams();
+    const codReserva = useParams().codReserva;
+    console.log(codReserva);
 
     const [reserva, setReserva] = useState([]);
     useEffect(() => {
         try {
         api
-        .get(`/api/reservas/${codReserva.codReserva}`)
+        .get(`/api/reservas/${codReserva}`)
         .then((response) => setReserva(response.data))
         } catch (error) {
         console.log("erro: "+error);
@@ -35,7 +36,7 @@ function EditarReservaLogin() {
     return (
         <EditarReservaLoginContainer>
         <Header />
-        <Login codReserva={codReserva.codReserva}/>
+        <Login codReserva={reserva}/>
         <Footer />
         </EditarReservaLoginContainer>
     );
