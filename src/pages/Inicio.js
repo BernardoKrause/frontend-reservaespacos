@@ -20,6 +20,10 @@ const InicioButtons = styled.div`
   display: flex;
   gap: 4vw;
   margin: 8vh 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `
 
 const InicioEspacosTitle = styled.h1`
