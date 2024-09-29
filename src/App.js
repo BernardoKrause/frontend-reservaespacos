@@ -4,7 +4,7 @@ import Inicio from './pages/Inicio';
 import RealizarReserva from './pages/RealizarReserva';
 import Espacos from './pages/Espacos'
 import CalendarPage from './pages/CalendarPage';
-import EditarReservaLogin from './pages/EditarReservaLogin';
+import ReservaLogin from './pages/ReservaLogin';
 
 function App() {
 
@@ -15,7 +15,7 @@ function App() {
         <Route path='realizar-reserva' element={<RealizarReserva />} />
         <Route path='espacos' element={<Espacos />} />
         <Route path='calendario' element={<CalendarPage />} />
-        <Route path='editar-reserva-login/:codReserva/:situacao' element={<EditarReservaLogin />}/>
+        <Route path='reserva-login/:codReserva/:situacao' element={<ReservaLogin />}/>
         <Route path='espacos/calendario/:codEspaco' element={<CalendarPage />} />
       </Routes>
     </BrowserRouter>

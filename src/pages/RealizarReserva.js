@@ -161,27 +161,6 @@ function RealizarReserva() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowString = tomorrow.toISOString().split('T')[0];
 
-    const [reservasGeral, setReservasGeral] = useState([]);
-    useEffect(() => {
-      try {
-        api
-        .get(`/api/reservas/`)
-        .then((response) => setReservasGeral(response.data))
-      } catch (error) {
-        console.log("erro: "+error);
-      }
-    }, []);
-
-    function CodReserva() {
-      if (reservasEspaco.length === 0) {
-        return 1;
-      }
-
-      const codMaiorReserva = Math.max(...reservasGeral.map(reserva => reserva.codreserva));
-    
-      return codMaiorReserva + 1;
-    }
-
     const [reservasEspaco, setReservasEspaco] = useState([]);
     useEffect(() => {
       try {
@@ -212,41 +191,38 @@ function RealizarReserva() {
     event.preventDefault();
 
     const urlReserva = 'http://localhost:3030/api/reservas';
-    const codEspaco = codEspacoAtual
-    const dadosReserva = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo }
+    const codEspaco = codEspacoAtual;
+    const dadosReserva = { dataReserva, descricao, horaInicio, horaTermino, codEspaco, codTipo };
 
     if (!(validarTelefone(telefoneUsuario) && validarEmail(emailUsuario) && validarCPF(cpfUsuario))) {
-      return alert('Erro: Verifique os campos informados.');      
+        return alert('Erro: Verifique os campos informados.');
     } else if (verificaReserva(dataReserva, horaInicio, horaTermino)) {
-      return alert('ERRO: Já existe uma reserva nesse espaço e nesse mesmo horário!');
-    }else {
-      alert('Formulário enviado com sucesso!');
+        return alert('ERRO: Já existe uma reserva nesse espaço e nesse mesmo horário!');
+    } else {
+        alert('Formulário enviado com sucesso! Sua senha é seu CPF!');
     }
-    
-    await fetch(urlReserva, {
+
+    // Envia a reserva e obtém o código gerado
+    const reservaResponse = await fetch(urlReserva, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosReserva),
-    })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
+    });
 
-    const urlUsuario = 'http://localhost:3030/api/usuarios'
-    const codReserva = CodReserva();
-    const dadosUsuario = { codReserva, nomeUsuario, emailUsuario, telefoneUsuario, cpfUsuario }
+    const reservaData = await reservaResponse.json();
+    const codReserva = reservaData.codreserva; // Supondo que a API retorna o codreserva gerado
 
-    await fetch (urlUsuario, {
+    const urlUsuario = 'http://localhost:3030/api/usuarios';
+    const dadosUsuario = { codReserva, nomeUsuario, emailUsuario, telefoneUsuario, cpfUsuario };
+
+    await fetch(urlUsuario, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosUsuario),
-    })
-    .then((response) => response.json())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
+    });
 
     window.location.reload();
-  }
+};
 
   return (
     <RealizarReservaContainer className="RealizarReserva">
@@ -331,7 +307,6 @@ function RealizarReserva() {
             <LabelCheck>
                 <Input type='checkbox' required onChange={(e) => {
                   verificaReserva(dataReserva, horaInicio, horaTermino);
-                  console.log(CodReserva());
                   }}/>
                 Ciente que terei que apresentar documento de identificação com FOTO
             </LabelCheck>

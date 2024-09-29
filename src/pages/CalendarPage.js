@@ -27,7 +27,7 @@ const DivCalender = styled.div`
 
 const DivBotao = styled.div`
   justify-content: flex-end;
-  text-font: 20px
+  font-size: 20px;
 `;
 
 const CalendarioHeader = styled.h2``;
@@ -80,12 +80,12 @@ const CalendarPage = () => {
         const response = await api.get(`/api/espacos/${codEspaco}`);
         setEspacos(response.data);
       } catch (error) {
-        console.log("Erro: " + error);
+        console.log('Erro: ' + error);
       }
     };
 
     fetchEspacos(); // Chama a função para carregar os espaços
-  }, []);
+  }, [codEspaco]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -104,6 +104,7 @@ const CalendarPage = () => {
             title: event.descricao,
             start: startDateTime,
             end: endDateTime,
+            codigo: event.codreserva,
             extendedProps: {
               descricao: event.descricao,
               nomeespaco: event.nomeespaco,
@@ -146,8 +147,8 @@ const CalendarPage = () => {
   return (
     <CalendarContainer>
       <Header />
-      {espacos.map((espaco) => (
-        <DivCalender>
+      {espacos.map((espaco, i) => (
+        <DivCalender key={i}>
             <CalendarioHeader>Calendário - {espaco.nomeespaco} </CalendarioHeader>
             <FullCalendar
               plugins={[dayGridPlugin]}
@@ -172,12 +173,12 @@ const CalendarPage = () => {
         >
           <DivBotao>
             <h2>{selectedEvent.descricao}
-              <Link to={`/editar-reserva-login/${codEspaco}/1`}>
+              <Link to={`/reserva-login/${selectedEvent.codigo}/1`}>
                 <ActionButton onClick={handleEditEvent}>
                   <FontAwesomeIcon icon={faEdit} />
                 </ActionButton>
               </Link>
-              <Link to={`/editar-reserva-login/${codEspaco}/2`}>
+              <Link to={`/reserva-login/${selectedEvent.codigo}/2`}>
                 <ActionButton onClick={handleDeleteEvent}>
                   <FontAwesomeIcon icon={faTrash} />
                 </ActionButton>
