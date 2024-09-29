@@ -7,10 +7,11 @@ import { Link } from 'react-router-dom';
 
 const EspacoContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  flex-direction: column;
   padding: 16vh 0 0 0;
+
 `;
 
 const DivEspacos = styled.div`
@@ -20,6 +21,10 @@ const DivEspacos = styled.div`
   width: 80%;
   padding: 10px;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const Espaco = styled.div`
@@ -51,6 +56,11 @@ const FilterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 2vh;
+  }
 `;
 
 const InputContainer = styled.div`
