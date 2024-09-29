@@ -18,7 +18,9 @@ const RealizarReservaContainer = styled.div`
 const Formulario = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  @media (max-width: 768px) {
+    align-items: center;
+  }
 `
 
 const LabelsContainer = styled.div`
