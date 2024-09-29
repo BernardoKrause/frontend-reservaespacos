@@ -15,9 +15,20 @@ const RealizarReservaContainer = styled.div`
   font-size: 20px;
 `
 
+const Formulario = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
 const LabelsContainer = styled.div`
     display: flex;
     justify-content: space-between;
+    @media (max-width: 768px) {
+        align-items: center;
+        flex-direction: column;
+        width: 80vw;
+    }
 `
 
 const Label = styled.label`
@@ -25,6 +36,9 @@ const Label = styled.label`
     flex-direction: column;
     gap: 1vh;
     width: 48%;
+    @media (max-width: 768px) {
+        width: 80%;
+    }
 `
 
 const Input = styled.input`
@@ -42,6 +56,7 @@ const InputSelect = styled.select`
 const LabelCheck = styled.label`
     display: flex;
     margin: 2vh 0 2vh 0;
+    font-size: 0.6em;
 `
 
 const SubmitButton = styled.input`
@@ -227,7 +242,7 @@ function RealizarReserva() {
   return (
     <RealizarReservaContainer className="RealizarReserva">
         <Header />
-        <form onSubmit={handleSubmit}>
+        <Formulario onSubmit={handleSubmit}>
             <LabelsContainer>
                 <Label>
                     Espaço Esportivo
@@ -311,7 +326,7 @@ function RealizarReserva() {
                 Ciente que terei que apresentar documento de identificação com FOTO
             </LabelCheck>
             <SubmitButton type='submit' value="Enviar" />
-        </form>
+        </Formulario>
         <Footer />
     </RealizarReservaContainer>
   );
