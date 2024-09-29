@@ -8,7 +8,7 @@ const TituloLogin = styled.h1`
 `
 
 const LoginContainer = styled.div`
-    
+    min-height: 64vh;
 `;
 
 const Form = styled.form`
