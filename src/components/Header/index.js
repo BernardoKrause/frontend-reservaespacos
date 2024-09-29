@@ -11,13 +11,34 @@ const HeaderContainer = styled.div`
     right: 0;
     background-color: #fff;
     z-index: 9;
+
+    @media (max-width: 768px) {
+        justify-content: center;
+    }
 `
+
+const Logo = styled.img`
+  max-width: 16vw;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const Title = styled.h1`
+
+  @media (max-width: 768px) {
+    font-size: 6vw; 
+  }
+`;
+
+
 
 function Header() {
     return (
         <HeaderContainer>
-            <Link to="/"><img src={prefeituraLogo} alt='logo'></img></Link>
-            <h1>Reserva de espaços esportivos</h1>
+            <Link to="/"><Logo src={prefeituraLogo} alt='logo' /></Link>
+            <Title>Reserva de espaços esportivos</Title>
         </HeaderContainer>
     );
 }
